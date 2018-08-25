@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
-import torchtext.data as data
+import pytext.data as data
 
-from ..common.torchtext_test_case import TorchtextTestCase
+from ..common.pytext_test_case import PytextTestCase
 
 
-class TestDataset(TorchtextTestCase):
+class TestDataset(PytextTestCase):
     def test_batch_with_missing_field(self):
         # smoke test to see if batches with missing attributes are shown properly
         with open(self.test_missing_field_dataset_path, "wt") as f:

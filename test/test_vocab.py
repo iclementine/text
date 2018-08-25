@@ -7,12 +7,11 @@ import pickle
 
 import numpy as np
 from numpy.testing import assert_allclose
-import torch
-from torchtext import vocab
-from torchtext.vocab import Vectors, FastText, GloVe, CharNGram
+from pytext import vocab
+from pytext.vocab import Vectors, FastText, GloVe, CharNGram
 
 from .common.test_markers import slow
-from .common.torchtext_test_case import TorchtextTestCase
+from .common.pytext_test_case import PytextTestCase
 
 
 def conditional_remove(f):
@@ -37,13 +36,13 @@ class TestVocab(TorchtextTestCase):
                      'ｔｅｓｔ': 4, 'freq_too_low': 2})
         v = vocab.Vocab(c, min_freq=3, specials=['<unk>', '<pad>', '<bos>'])
         stoi = {"hello": 0, "world": 1, "ｔｅｓｔ": 2}
-        vectors = torch.FloatTensor([[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]])
+        vectors = np.array([[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]])
         dim = 2
         v.set_vectors(stoi, vectors, dim)
         expected_vectors = np.array([[0.0, 0.0], [0.0, 0.0], [0.0, 0.0],
                                      [0.0, 0.0], [0.1, 0.2], [0.5, 0.6],
                                      [0.3, 0.4]])
-        assert_allclose(v.vectors.numpy(), expected_vectors)
+        assert_allclose(v.vectors, expected_vectors)
 
     def test_vocab_download_fasttext_vectors(self):
         c = Counter({'hello': 4, 'world': 3, 'ᑌᑎIᑕOᗪᕮ_Tᕮ᙭T': 5, 'freq_too_low': 2})

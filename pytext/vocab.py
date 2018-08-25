@@ -9,7 +9,9 @@ import zipfile
 
 import six
 from six.moves.urllib.request import urlretrieve
-import torch
+# import torch
+import numpy
+import pickle
 from tqdm import tqdm
 import tarfile
 
@@ -143,7 +145,7 @@ class Vocab(object):
                     "Vectors object".format(type(vector)))
 
         tot_dim = sum(v.dim for v in vectors)
-        self.vectors = torch.Tensor(len(self), tot_dim)
+        self.vectors = numpy.ndarray((len(self), tot_dim))
         for i, token in enumerate(self.itos):
             start_dim = 0
             for v in vectors:
@@ -152,7 +154,7 @@ class Vocab(object):
                 start_dim = end_dim
             assert(start_dim == tot_dim)
 
-    def set_vectors(self, stoi, vectors, dim, unk_init=torch.Tensor.zero_):
+    def set_vectors(self, stoi, vectors, dim, unk_init=numpy.zeros_like):
         """
         Set the vectors for the Vocab instance from a collection of Tensors.
 
@@ -165,10 +167,10 @@ class Vocab(object):
                 vector[stoi["string"]] should return the vector for "string".
             dim: The dimensionality of the vectors.
             unk_init (callback): by default, initialize out-of-vocabulary word vectors
-                to zero vectors; can be any function that takes in a Tensor and
-                returns a Tensor of the same size. Default: torch.Tensor.zero_
+                to zero vectors; can be any function that takes in a ndarray and
+                returns a ndarray of the same size. Default: np.zeros_like
         """
-        self.vectors = torch.Tensor(len(self), dim)
+        self.vectors = numpy.ndarray((len(self), dim))
         for i, token in enumerate(self.itos):
             wv_index = stoi.get(token, None)
             if wv_index is not None:
@@ -178,9 +180,11 @@ class Vocab(object):
 
 
 class SubwordVocab(Vocab):
-
+    """
+    SubWord Vocab Class.
+    """
     def __init__(self, counter, max_size=None, specials=['<pad>'],
-                 vectors=None, unk_init=torch.Tensor.zero_):
+                 vectors=None, unk_init=numpy.zeros_like):
         """Create a revtok subword vocabulary from a collections.Counter.
 
         Arguments:
@@ -219,7 +223,9 @@ class SubwordVocab(Vocab):
 
 
 class Vectors(object):
-
+    """
+    Vectors for a Vocabulary.
+    """
     def __init__(self, name, cache=None,
                  url=None, unk_init=None):
         """
@@ -228,26 +234,26 @@ class Vectors(object):
            cache: directory for cached vectors
            url: url for download if vectors not found in cache
            unk_init (callback): by default, initalize out-of-vocabulary word vectors
-               to zero vectors; can be any function that takes in a Tensor and
-               returns a Tensor of the same size
+               to zero vectors; can be any function that takes in a ndarray and
+               returns a ndarray of the same size
          """
         cache = '.vector_cache' if cache is None else cache
-        self.unk_init = torch.Tensor.zero_ if unk_init is None else unk_init
+        self.unk_init = numpy.zeros_like if unk_init is None else unk_init
         self.cache(name, cache, url=url)
 
     def __getitem__(self, token):
         if token in self.stoi:
             return self.vectors[self.stoi[token]]
         else:
-            return self.unk_init(torch.Tensor(1, self.dim))
+            return self.unk_init(numpy.ndarray((1, self.dim)))
 
     def cache(self, name, cache, url=None):
         if os.path.isfile(name):
             path = name
-            path_pt = os.path.join(cache, os.path.basename(name)) + '.pt'
+            path_pt = os.path.join(cache, os.path.basename(name)) + '.dat'
         else:
             path = os.path.join(cache, name)
-            path_pt = path + '.pt'
+            path_pt = path + '.dat'
 
         if not os.path.isfile(path_pt):
             if not os.path.isfile(path) and url:
@@ -329,10 +335,12 @@ class Vectors(object):
             logger.info('Saving vectors to {}'.format(path_pt))
             if not os.path.exists(cache):
                 os.makedirs(cache)
-            torch.save((self.itos, self.stoi, self.vectors, self.dim), path_pt)
+            with open(path_pt, 'wb') as f:
+                pick.dump((self.itos, self.stoi, self.vectors, self.dim), f)
         else:
             logger.info('Loading vectors from {}'.format(path_pt))
-            self.itos, self.stoi, self.vectors, self.dim = torch.load(path_pt)
+            with open(path_pt, 'rb') as f:
+                self.itos, self.stoi, self.vectors, self.dim = pickle.load(f)
 
 
 class GloVe(Vectors):
@@ -369,7 +377,7 @@ class CharNGram(Vectors):
         super(CharNGram, self).__init__(self.name, url=self.url, **kwargs)
 
     def __getitem__(self, token):
-        vector = torch.Tensor(1, self.dim).zero_()
+        vector = numpy.zeros(1, self.dim)
         if token == "<unk>":
             return self.unk_init(vector)
         # These literals need to be coerced to unicode for Python 2 compatibility

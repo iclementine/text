@@ -22,17 +22,17 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-VERSION = find_version('torchtext', '__init__.py')
+VERSION = find_version('pytext', '__init__.py')
 long_description = read('README.rst')
 
 setup_info = dict(
     # Metadata
-    name='torchtext',
+    name='pytext',
     version=VERSION,
-    author='PyTorch core devs and James Bradbury',
-    author_email='jekbradbury@gmail.com',
-    url='https://github.com/pytorch/text',
-    description='Text utilities and datasets for PyTorch',
+    author='Clementine',
+    author_email='iclementine@outlook.com',
+    url='https://github.com/iclementine/text',
+    description='Text utilities and datasets for generic deep learning, Fork from torchtext but uses numpy to store datasets for more generic use.',
     long_description=long_description,
     license='BSD',
 

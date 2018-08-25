@@ -6,14 +6,15 @@ import gzip
 import shutil
 from functools import partial
 
-import torch.utils.data
+# import torch.utils.data
+from .datasetbase import Dataset as DatasetBase
 
 from .utils import RandomShuffler
 from .example import Example
 from ..utils import download_from_url, unicode_csv_reader
 
 
-class Dataset(torch.utils.data.Dataset):
+class Dataset(DatasetBase):
     """Defines a dataset composed of Examples along with its Fields.
 
     Attributes:

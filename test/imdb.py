@@ -1,6 +1,6 @@
-from torchtext import data
-from torchtext import datasets
-from torchtext.vocab import GloVe
+from pytext import data
+from pytext import datasets
+from pytext.vocab import GloVe
 
 
 # Approach 1:

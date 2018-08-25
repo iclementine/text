@@ -1,4 +1,4 @@
-from torchtext import data
+from pytext import data
 
 
 TEXT = data.Field()

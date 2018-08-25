@@ -1,4 +1,4 @@
-from torchtext import datasets
+from pytext import datasets
 
 # en-valid
 TRAIN_NUM = [0] + [900] * 16 + [904, 905, 900, 904]

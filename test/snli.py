@@ -1,5 +1,5 @@
-from torchtext import data
-from torchtext import datasets
+from pytext import data
+from pytext import datasets
 
 TEXT = data.Field()
 LABEL = data.Field(sequential=False)

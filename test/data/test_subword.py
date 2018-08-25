@@ -2,8 +2,8 @@ import unittest
 import pytest
 import sys
 
-from torchtext import data
-from torchtext.datasets import TREC
+from pytext import data
+from pytext.datasets import TREC
 
 
 class TestSubword(unittest.TestCase):

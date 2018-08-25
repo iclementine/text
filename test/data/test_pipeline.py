@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import six
-import torchtext.data as data
+import pytext.data as data
 
-from ..common.torchtext_test_case import TorchtextTestCase
+from ..common.pytext_test_case import PytextTestCase
 
 
-class TestPipeline(TorchtextTestCase):
+class TestPipeline(PytextTestCase):
     @staticmethod
     def repeat_n(x, n=3):
         """

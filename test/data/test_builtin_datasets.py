@@ -1,9 +1,9 @@
 import os
-import torchtext.data as data
-from torchtext.datasets import WikiText2, PennTreebank
+import pytext.data as data
+from pytext.datasets import WikiText2, PennTreebank
 
 from ..common.test_markers import slow
-from ..common.torchtext_test_case import TorchtextTestCase
+from ..common.pytext_test_case import PytextTestCase
 
 
 def conditional_remove(f):
@@ -11,7 +11,7 @@ def conditional_remove(f):
         os.remove(f)
 
 
-class TestDataset(TorchtextTestCase):
+class TestDataset(PytextTestCase):
     @slow
     def test_wikitext2(self):
         # smoke test to ensure wikitext2 works properly

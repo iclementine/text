@@ -1,7 +1,7 @@
 import os
 from io import open
 
-import torch
+import numpy
 
 from ..data import Dataset, Field, Example, Iterator
 
@@ -41,7 +41,7 @@ class BABI20Field(Field):
                 super(BABI20Field, self).numericalize(x, device=device).data
                 for x in arr
             ]
-            arr = torch.stack(tmp)
+            arr = numpy.stack(tmp)
             if self.sequential:
                 arr = arr.contiguous()
             return arr

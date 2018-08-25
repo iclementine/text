@@ -4,14 +4,14 @@ from collections import Counter
 
 from numpy.testing import assert_allclose
 import torch
-import torchtext.data as data
+import pytext.data as data
 import pytest
 from torch.nn import init
 
-from ..common.torchtext_test_case import TorchtextTestCase, verify_numericalized_example
+from ..common.pytext_test_case import PytextTestCase, verify_numericalized_example
 
 
-class TestField(TorchtextTestCase):
+class TestField(PytextTestCase):
     def test_process(self):
         raw_field = data.RawField()
         field = data.Field(sequential=True, use_vocab=False, batch_first=True)
@@ -393,7 +393,7 @@ class TestField(TorchtextTestCase):
                 test_example_data)
 
 
-class TestNestedField(TorchtextTestCase):
+class TestNestedField(PytextTestCase):
     def test_init_minimal(self):
         nesting_field = data.Field()
         field = data.NestedField(nesting_field)
@@ -766,7 +766,7 @@ class TestNestedField(TorchtextTestCase):
                           vectors_cache=".vector_cache")
 
 
-class TestLabelField(TorchtextTestCase):
+class TestLabelField(PytextTestCase):
     def test_init(self):
         # basic init
         label_field = data.LabelField()

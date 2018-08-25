@@ -1,19 +1,13 @@
-.. image:: https://travis-ci.org/pytorch/text.svg?branch=master
-    :target: https://travis-ci.org/pytorch/text
 
-.. image:: https://codecov.io/gh/pytorch/text/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/pytorch/text
-
-.. image:: https://readthedocs.org/projects/torchtext/badge/?version=latest
-    :target: http://torchtext.readthedocs.io/en/latest/?badge=latest
-
-torchtext
+pytext
 +++++++++
 
 This repository consists of:
 
-* `torchtext.data <#data>`_: Generic data loaders, abstractions, and iterators for text (including vocabulary and word vectors)
-* `torchtext.datasets <#datasets>`_: Pre-built loaders for common NLP datasets
+* `pytext.data <#data>`_: Generic data loaders, abstractions, and iterators for text (including vocabulary and word vectors)
+* `pytext.datasets <#datasets>`_: Pre-built loaders for common NLP datasets
+
+It is a fork of torchtext, but use numpy ndarray for dataset instead of torch.Tensor or Variable, so as to make it a more generic toolbox for NLP users.
 
 Installation
 ============
@@ -21,9 +15,8 @@ Installation
 
 Make sure you have Python 2.7 or 3.5+ and PyTorch 0.4.0 or newer. You can then install torchtext using pip::
 
-    pip install torchtext
+    pip install pytext
     
-For PyTorch versions before 0.4.0, please use `pip install torchtext==0.2.3`.
 
 Optional requirements
 ---------------------

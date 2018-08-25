@@ -2,7 +2,9 @@
 from collections import Counter, OrderedDict
 from itertools import chain
 import six
-import torch
+#import torch
+import numpy 
+import pickle
 from tqdm import tqdm
 
 from .dataset import Dataset
@@ -109,28 +111,28 @@ class Field(RawField):
     """
 
     vocab_cls = Vocab
-    # Dictionary mapping PyTorch tensor dtypes to the appropriate Python
+    # Dictionary mapping Numpy ndarray dtypes to the appropriate Python
     # numeric type.
     dtypes = {
-        torch.float32: float,
-        torch.float: float,
-        torch.float64: float,
-        torch.double: float,
-        torch.float16: float,
-        torch.half: float,
+        numpy.float32: float,
+        numpy.float: float,
+        numpy.float64: float,
+        numpy.double: float,
+        numpy.float16: float,
+        numpy.half: float,
 
-        torch.uint8: int,
-        torch.int8: int,
-        torch.int16: int,
-        torch.short: int,
-        torch.int32: int,
-        torch.int: int,
-        torch.int64: int,
-        torch.long: int,
+        numpy.uint8: int,
+        numpy.int8: int,
+        numpy.int16: int,
+        numpy.short: int,
+        numpy.int32: int,
+        numpy.int: int,
+        numpy.int64: int,
+        numpy.long: int,
     }
 
     def __init__(self, sequential=True, use_vocab=True, init_token=None,
-                 eos_token=None, fix_length=None, dtype=torch.long,
+                 eos_token=None, fix_length=None, dtype=numpy.long,
                  preprocessing=None, postprocessing=None, lower=False,
                  tokenize=(lambda s: s.split()), include_lengths=False,
                  batch_first=False, pad_token="<pad>", unk_token="<unk>",
@@ -258,9 +260,9 @@ class Field(RawField):
         self.vocab = self.vocab_cls(counter, specials=specials, **kwargs)
 
     def numericalize(self, arr, device=None):
-        """Turn a batch of examples that use this field into a Variable.
+        """Turn a batch of examples that use this field into a ndarray.
 
-        If the field has include_lengths=True, a tensor of lengths will be
+        If the field has include_lengths=True, a 1d-array of lengths will be
         included in the return value.
 
         Arguments:
@@ -278,7 +280,7 @@ class Field(RawField):
                              "(data batch, batch lengths).")
         if isinstance(arr, tuple):
             arr, lengths = arr
-            lengths = torch.tensor(lengths, dtype=self.dtype, device=device)
+            lengths = torch.tensor(lengths, dtype=self.dtype)
 
         if self.use_vocab:
             if self.sequential:
@@ -305,12 +307,12 @@ class Field(RawField):
             if self.postprocessing is not None:
                 arr = self.postprocessing(arr, None)
 
-        var = torch.tensor(arr, dtype=self.dtype, device=device)
+        var = numpy.array(arr, dtype=self.dtype)
 
         if self.sequential and not self.batch_first:
-            var.t_()
-        if self.sequential:
-            var = var.contiguous()
+            var = numpy.transpose(var)
+        #if self.sequential:
+            #var = var.contiguous()
 
         if self.include_lengths:
             return var, lengths
@@ -337,9 +339,9 @@ class ReversibleField(Field):
                 print("Please install revtok.")
                 raise
         if not self.batch_first:
-            batch = batch.t()
-        with torch.cuda.device_of(batch):
-            batch = batch.tolist()
+            batch = numpy.transpose(batch)
+        #with torch.cuda.device_of(batch):
+        batch = batch.tolist() 
         batch = [[self.vocab.itos[ind] for ind in ex] for ex in batch]  # denumericalize
 
         def trim(s, t):
@@ -438,7 +440,7 @@ class NestedField(Field):
     """
 
     def __init__(self, nesting_field, use_vocab=True, init_token=None, eos_token=None,
-                 fix_length=None, dtype=torch.long, preprocessing=None,
+                 fix_length=None, dtype=numpy.long, preprocessing=None,
                  postprocessing=None, tokenize=lambda s: s.split(),
                  include_lengths=False, pad_token='<pad>',
                  pad_first=False, truncate_first=False):
@@ -656,12 +658,12 @@ class NestedField(Field):
             numericalized_ex = self.nesting_field.numericalize(
                 arr, device=device)
             numericalized.append(numericalized_ex)
-        padded_batch = torch.stack(numericalized)
+        padded_batch = numpy.stack(numericalized)
 
         self.nesting_field.include_lengths = True
         if self.include_lengths:
-            sentence_lengths = torch.LongTensor(sentence_lengths, device=device)
-            word_lengths = torch.LongTensor(word_lengths, device=device)
+            sentence_lengths = numpy.ndarray(sentence_lengths, dtype=numpy.long)
+            word_lengths = numpy.ndarray(word_lengths, dtype=numpy.long)
             return (padded_batch, sentence_lengths, word_lengths)
         return padded_batch
 

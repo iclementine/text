@@ -73,9 +73,9 @@ def interleave_keys(a, b):
     return int(''.join(interleave(format(x, '016b') for x in (a, b))), base=2)
 
 
-def get_torch_version():
-    import torch
-    v = torch.__version__
+def get_numpy_version():
+    import numpy
+    v = numpy.__version__
     version_substrings = v.split('.')
     major, minor = version_substrings[0], version_substrings[1]
     return int(major), int(minor)
@@ -111,3 +111,20 @@ class RandomShuffler(object):
         """Shuffle and return a new list."""
         with self.use_internal_state():
             return random.sample(data, len(data))
+        
+def typename(o):
+    module = ''
+    class_name = ''
+    if hasattr(o, '__module__') and o.__module__ != 'builtins' \
+            and o.__module__ != '__builtin__' and o.__module__ is not None:
+        module = o.__module__ + '.'
+
+    if hasattr(o, '__qualname__'):
+        class_name = o.__qualname__
+    elif hasattr(o, '__name__'):
+        class_name = o.__name__
+    else:
+        class_name = o.__class__.__name__
+
+    return module + class_name
+

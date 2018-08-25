@@ -10,7 +10,7 @@ import tempfile
 logger = logging.getLogger(__name__)
 
 
-class TorchtextTestCase(TestCase):
+class PytextTestCase(TestCase):
     def setUp(self):
         logging.basicConfig(format=('%(asctime)s - %(levelname)s - '
                                     '%(name)s - %(message)s'),
