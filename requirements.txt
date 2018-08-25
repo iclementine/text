@@ -1,3 +1,6 @@
+# Dataset internals
+numpy
+
 # Progress bars on iterators
 tqdm
 
