@@ -15,7 +15,7 @@ Installation
 
 Make sure you have Python 2.7 or 3.5+ and PyTorch 0.4.0 or newer. You can then install torchtext using pip::
 
-    pip install pytext
+    pip install pytexttool
     
 
 Optional requirements
