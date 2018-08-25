@@ -27,7 +27,7 @@ long_description = read('README.rst')
 
 setup_info = dict(
     # Metadata
-    name='pytext',
+    name='pytexttool',
     version=VERSION,
     author='Clementine',
     author_email='iclementine@outlook.com',
