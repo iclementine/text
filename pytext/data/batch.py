@@ -78,6 +78,6 @@ def _short_str(tensor):
     size_str = 'x'.join(str(size) for size in tensor.shape)
     #device_str = '' if not tensor.is_cuda else \
         #' (GPU {})'.format(tensor.get_device())
-    strt = '[{} of size {}{}]'.format(typename(tensor),
-                                      size_str, device_str)
+    strt = '[{} of size {}]'.format(typename(tensor),
+                                      size_str)
     return strt
