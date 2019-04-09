@@ -280,7 +280,7 @@ class Field(RawField):
                              "(data batch, batch lengths).")
         if isinstance(arr, tuple):
             arr, lengths = arr
-            lengths = torch.tensor(lengths, dtype=self.dtype)
+            lengths = numpy.array(lengths, dtype=self.dtype)
 
         if self.use_vocab:
             if self.sequential:
